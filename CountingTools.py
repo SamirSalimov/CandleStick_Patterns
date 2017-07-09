@@ -23,20 +23,21 @@ class Tools_cl(object):
         print(self.issuer_list)
         self.issuer_list.to_csv('issuer_list.csv')
 
-    def change_class_varialbles(self,period_ma,period_lr):
-        self.ma_period = period_ma
-        self.lr_period = period_lr
-
     def moving_average(self):
         self.issuer_list['MA'] = Series.rolling(self.issuer_list['Close'], window=self.ma_period, min_periods=self.ma_period).mean()
 
     def ma_linear_regretion(self):
         y = arange(float(self.lr_period))
-        for index in range(len(self.issuer_list)-self.lr_period-(self.ma_period-1)): #from end of issuer_list
+        print(1)
+        for index in range((self.ma_period-1),len(self.issuer_list)-self.lr_period,1): #from end of issuer_list
+            print(2, index)
             for index2 in range(self.lr_period): #prepare array len(lr_period)
-                y[index2] = self.issuer_list['MA'][index-self.lr_period-index2-1]
+                print(3, index2)
+                y[index2] = self.issuer_list['MA'][index+index2]
+                print(y)
+                print(arange(self.lr_period))
             slope, intercept, r_value, p_value, std_err = stats.linregress(arange(self.lr_period), y)
-            self.issuer_list.set_value([index],'LR',slope)
+            self.issuer_list.set_value([index+self.lr_period],'LR',slope)
 
     def umbrella_candle (self):
         u_shadow_size_parameter = 0.2
@@ -69,15 +70,16 @@ class Tools_cl(object):
         self.issuer_list['Hammer'] = 'False'
         umbrella_index = self.issuer_list.loc[(self.issuer_list.Umbrella == 'True')].index.tolist()
         for index in umbrella_index:
-            if((self.issuer_list.Low[index-1] >= self.issuer_list.Low[index]) & (self.issuer_list.Low[index+1] >= self.issuer_list.Low[index])):
-                av_slope = 0.0
-                for index_lr in range(self.lr_period):
-                    av_slope = av_slope + self.issuer_list.LR[index+index_lr]
-                av_slope=av_slope/float(self.lr_period)
-                if (av_slope < self.hammer_trend_slope*float(-1)):
-                    self.issuer_list.set_value([index-1], 'Hammer', 'HA')
-                    self.issuer_list.set_value([index], 'Hammer', 'H')
-                    self.issuer_list.set_value([index+1], 'Hammer', 'HB')
+            if(index >= self.ma_period+self.lr_period):
+                if((self.issuer_list.Low[index-1] >= self.issuer_list.Low[index]) & (self.issuer_list.Low[index+1] >= self.issuer_list.Low[index])):
+                    av_slope = 0.0
+                    for index_lr in range(self.lr_period):
+                        av_slope = av_slope + self.issuer_list.LR[index-index_lr]
+                    av_slope=av_slope/float(self.lr_period)
+                    if (av_slope < self.hammer_trend_slope*float(-1)):
+                        self.issuer_list.set_value([index+1], 'Hammer', 'HA')
+                        self.issuer_list.set_value([index], 'Hammer', 'H')
+                        self.issuer_list.set_value([index-1], 'Hammer', 'HB')
 
     def hanging_man(self):
         self.issuer_list['Hanging Man'] = 'False'
