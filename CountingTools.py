@@ -17,8 +17,8 @@ class Tools_cl(object):
 
         self.moving_average()
         self.ma_linear_regretion()
-        #self.umbrella_candle()
-        #self.hammer()
+        self.umbrella_candle()
+        self.hammer()
         #self.hanging_man()
         print(self.issuer_list)
         self.issuer_list.to_csv('issuer_list.csv')
@@ -28,18 +28,12 @@ class Tools_cl(object):
 
     def ma_linear_regretion(self):
         y = arange(float(self.lr_period))
-        for index in range((self.ma_period-1),len(self.issuer_list)-self.lr_period,1): #from end of issuer_list
-            print(2, index)
-
+        for index in range((self.ma_period - 1), len(self.issuer_list) - self.lr_period + 1,
+                           1):  # from end of issuer_list
             for index2 in range(self.lr_period): #prepare array len(lr_period)
-                print(3, index2)
-
                 y[index2] = self.issuer_list['MA'][index+index2]
-                print(y)
-                print(arange(self.lr_period))
-
             slope, intercept, r_value, p_value, std_err = stats.linregress(arange(self.lr_period), y)
-            self.issuer_list.set_value([index+self.lr_period],'LR',slope)
+            self.issuer_list.set_value([index + self.lr_period - 1], 'LR', slope)
 
     def umbrella_candle (self):
         u_shadow_size_parameter = 0.2
