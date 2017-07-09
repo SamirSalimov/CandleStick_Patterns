@@ -30,11 +30,14 @@ class Tools_cl(object):
         y = arange(float(self.lr_period))
         for index in range((self.ma_period-1),len(self.issuer_list)-self.lr_period,1): #from end of issuer_list
             print(2, index)
+
             for index2 in range(self.lr_period): #prepare array len(lr_period)
                 print(3, index2)
+
                 y[index2] = self.issuer_list['MA'][index+index2]
                 print(y)
                 print(arange(self.lr_period))
+
             slope, intercept, r_value, p_value, std_err = stats.linregress(arange(self.lr_period), y)
             self.issuer_list.set_value([index+self.lr_period],'LR',slope)
 
