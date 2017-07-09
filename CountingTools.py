@@ -28,7 +28,6 @@ class Tools_cl(object):
 
     def ma_linear_regretion(self):
         y = arange(float(self.lr_period))
-        print(1)
         for index in range((self.ma_period-1),len(self.issuer_list)-self.lr_period,1): #from end of issuer_list
             print(2, index)
             for index2 in range(self.lr_period): #prepare array len(lr_period)
