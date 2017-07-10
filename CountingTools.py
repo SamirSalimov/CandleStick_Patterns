@@ -1,9 +1,17 @@
 #!/usr/bin/python3
 
 #import pandas as pd
-from pandas import Series,read_csv
+from pandas import Series, read_csv, DatetimeIndex
 from scipy import stats
-from numpy import arange,where,ndarray
+from numpy import arange, where, diff, array, all, concatenate
+
+import pandas as pd
+import pandas_datareader.data as web
+import datetime as dt
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import matplotlib.dates as mdates
 
 class Tools_cl(object):
 
@@ -12,14 +20,13 @@ class Tools_cl(object):
         self.ma_period = ma_period
         self.lr_period = lr_period
         self.hammer_trend_slope = 0.087
-
         self.issuer_list = read_csv(self.file)
-
-        self.moving_average()
-        self.ma_linear_regretion()
-        self.umbrella_candle()
-        self.hammer()
-        self.hanging_man()
+        #        self.moving_average()
+        #        self.ma_linear_regretion()
+        #        self.umbrella_candle()
+        #        self.hammer()
+        #        self.hanging_man()
+        self.trend()
         self.issuer_list.to_csv('issuer_list.csv')
 
     def moving_average(self):
@@ -97,14 +104,8 @@ class Tools_cl(object):
 
 
 
-
 def main():
 
-
     a = Tools_cl('intc.csv',10,5)
-
-
-
-
 
 if __name__ == "__main__": main()

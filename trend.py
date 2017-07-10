@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.dates as mdates
+import seaborn as sns  # This is just to get nicer plots
+
 
 # Colecting data
 market = 'INTC'
@@ -23,7 +25,6 @@ market_data['Signal'] = np.where(market_data['diff_pc'] < -TH, -1, market_data['
 
 # Plot data and fits
 
-import seaborn as sns  # This is just to get nicer plots
 
 signal = market_data['Signal']
 
@@ -47,6 +48,7 @@ for start_idx, end_idx in zip(relevant_bounds_idx[:-1], relevant_bounds_idx[1:])
     # Slice segment
     segment = market_data.iloc[start_idx:end_idx + 1, :]
     x = np.array(mdates.date2num(segment.index.to_pydatetime()))
+    print(x)
     # Plot data
     data_color = 'green' if signal[start_idx] > 0 else 'red'
     plt.plot(segment.index, segment['Close'], color=data_color)
@@ -55,3 +57,5 @@ for start_idx, end_idx in zip(relevant_bounds_idx[:-1], relevant_bounds_idx[1:])
     fit_val = coef * x + intercept
     fit_color = 'yellow' if coef > 0 else 'blue'
     plt.plot(segment.index, fit_val, color=fit_color)
+
+    plt.show()
